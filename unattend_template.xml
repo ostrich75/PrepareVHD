@@ -1,0 +1,102 @@
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+<settings pass="windowsPE">
+	<component name="Microsoft-Windows-Setup" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="%Architecture%">  xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<UpgradeData>
+   			<Upgrade>false</Upgrade>
+      		</UpgradeData>
+      		<UserData>
+        		<AcceptEula>true</AcceptEula>
+        		<FullName>Microsoft</FullName>
+        		<Organization>Microsoft</Organization>
+              		<ProductKey>
+          			<WillShowUI>OnError</WillShowUI>
+          			<Key>%ProductKey%</Key>
+        		</ProductKey>
+      		</UserData>
+      		<Restart>Restart</Restart>
+    	</component>
+   	<component name="Microsoft-Windows-International-Core-WinPE" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="%Architecture%">
+     		<SetupUILanguage>
+        		<UILanguage>en-us</UILanguage>
+      			<WillShowUI>OnError</WillShowUI>
+     		</SetupUILanguage>
+     		<UILanguage>%locale%</UILanguage>
+     		<SystemLocale>%locale%</SystemLocale>
+     		<UserLocale>%locale%</UserLocale>
+     		<InputLocale>0409:00000409</InputLocale>
+   	</component>
+</settings>
+<settings pass="specialize">
+	<component name="Microsoft-Windows-Shell-Setup" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="%Architecture%">
+        	<ComputerName>%computername%</ComputerName>
+	</component>
+	<component name="Microsoft-Windows-TerminalServices-RDP-WinStationExtensions" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="%Architecture%">
+		<UserAuthentication>0</UserAuthentication>
+	</component>
+	<component name="Microsoft-Windows-Deployment" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="%Architecture%">
+		<RunSynchronous>
+			<RunSynchronousCommand>
+                        	<Order>1</Order>
+                                <Path>cmd /c net user administrator /active:yes</Path>
+                                <Description>RS1</Description>
+                                <WillReboot>Never</WillReboot>
+			</RunSynchronousCommand>
+		</RunSynchronous>
+	</component>
+	<component name="Networking-MPSSVC-Svc" processorArchitecture="%Architecture%" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<FirewallGroups>
+                	<FirewallGroup wcm:action="add" wcm:keyValue="RemoteDesktop">
+                    		<Active>true</Active>
+                    		<Profile>all</Profile>
+                    		<Group>>@FirewallAPI.dll,-28752</Group>
+                	</FirewallGroup>
+			<FirewallGroup wcm:action="add" wcm:keyValue="FileandPrinterSharing">
+                    		<Active>true</Active>
+                    		<Profile>all</Profile>
+                    		<Group>@FirewallAPI.dll,-28502</Group>
+                	</FirewallGroup>
+            	</FirewallGroups>
+	</component>
+	<component name="Microsoft-Windows-IE-ESC" processorArchitecture="%Architecture%" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<IEHardenAdmin>false</IEHardenAdmin>
+		<IEHardenUser>false</IEHardenUser>
+	</component>
+</settings>
+<settings pass="oobeSystem">
+	<component name="Microsoft-Windows-Shell-Setup" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="%Architecture%">
+      		<AutoLogon>
+			<Enabled>false</Enabled>
+			<Username>Administrator</Username>
+        		<Password>
+          			<Value>%adminpassword%</Value>
+          			<PlainText>true</PlainText>
+        		</Password>
+      		</AutoLogon>
+      		<UserAccounts>
+       			<AdministratorPassword>
+        			<Value>%adminpassword%</Value>
+        			<PlainText>true</PlainText>
+       			</AdministratorPassword>
+      		</UserAccounts>
+		<FirstLogonCommands>
+        		<SynchronousCommand>
+          			<Order>1</Order>
+          			<CommandLine>cmd /c netsh advfirewall set allprofiles state off</CommandLine>
+          			<Description>Runonce01</Description>
+        		</SynchronousCommand>
+        		<SynchronousCommand>
+          			<Order>2</Order>
+          			<CommandLine>cmd /c bcdedit /set {default} hypervisorlaunchtype auto</CommandLine>
+          			<Description>Runonce02</Description>
+        		</SynchronousCommand>			
+      		</FirstLogonCommands>	
+		<OOBE><SkipMachineOOBE>true</SkipMachineOOBE></OOBE>
+	</component>
+	<component xmlns="" name="Microsoft-Windows-TerminalServices-LocalSessionManager" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="%Architecture%">
+     		<fDenyTSConnections>false</fDenyTSConnections>
+   	</component>
+   	<component xmlns="" name="Microsoft-Windows-TerminalServices-RDP-WinStationExtensions" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" processorArchitecture="%Architecture%">
+     		<UserAuthentication>0</UserAuthentication>
+   	</component>
+</settings>
+</unattend>
