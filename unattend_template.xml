@@ -48,7 +48,7 @@
                 	<FirewallGroup wcm:action="add" wcm:keyValue="RemoteDesktop">
                     		<Active>true</Active>
                     		<Profile>all</Profile>
-                    		<Group>>@FirewallAPI.dll,-28752</Group>
+                    		<Group>@FirewallAPI.dll,-28752</Group>
                 	</FirewallGroup>
 			<FirewallGroup wcm:action="add" wcm:keyValue="FileandPrinterSharing">
                     		<Active>true</Active>
