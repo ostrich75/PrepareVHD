@@ -35,6 +35,10 @@ param
     [Parameter(Mandatory = $false)]
     $DriverPath,
 
+    [String]
+    [Parameter(Mandatory = $false)]
+    $PackagePath,
+    
     [string]
     [Parameter(Mandatory = $false)]
     $COMPUTERNAME,
@@ -70,11 +74,37 @@ if (!(Test-Path -Path $ImagePath))
 
 if (!(Test-Path -Path $VHDxPath))
 {
-    $VHDxPath = Read-Host "What directory do you want to put the VHDx"
+    $VHDxPath = Read-Host "What directory do you want to put the VHDx?"
     if (!(Test-Path -Path $VHDxPath))
     {
         Write-Host "ERROR  : Can't find VHDx target location" -ForegroundColor Red
         Exit
+    }
+}
+
+if ($DriverPath -ne "")
+{
+    if (!(Test-Path -Path $DriverPath))
+    {
+        $DriverPath = Read-Host "Driver path is not valid. Where is the location of the driver?"
+        if (!(Test-Path -Path $DriverPath))
+        {
+            Write-Host "ERROR  : Can't find specified driver path." -ForegroundColor Red
+            Exit
+        }
+    }
+}
+
+if ($PackagePath -ne "")
+{
+    if (!(Test-Path -Path $PackagePath))
+    {
+        $PackagePath = Read-Host "Package path is not valid. Where is the location of the packages?"
+        if (!(Test-Path -Path $PackagePath))
+        {
+            Write-Host "ERROR  : Can't find specified package path." -ForegroundColor Red
+            Exit
+        }
     }
 }
 
@@ -116,36 +146,27 @@ Write-Progress $CreateVHDMessage
 . .\Convert-WindowsImage.ps1 
 # Prepare all the variables in advance (optional) 
 
-if ($DriverPath -eq "")
-{
-    $ConvertWindowsImageParam = @{  
-        SourcePath          = $ImagePath  
-        RemoteDesktopEnable = $True
-        ExpandOnNativeBoot  = $false  
-        Passthru            = $True  
-        Edition             = $Edition    
-        VHDPath             = $VHDXFILE 
-        VHDFormat           = 'VHDX'
-        SizeBytes           = $size
-        BCDinVHD            = $Usage
-        VHDPartitionStyle   = $VHDPartitionStyle
-    }  
+$ConvertWindowsImageParam = @{  
+    SourcePath          = $ImagePath  
+    RemoteDesktopEnable = $True
+    ExpandOnNativeBoot  = $false  
+    Passthru            = $True  
+    Edition             = $Edition    
+    VHDPath             = $VHDXFILE 
+    VHDFormat           = 'VHDX'
+    SizeBytes           = $size
+    BCDinVHD            = $Usage
+    VHDPartitionStyle   = $VHDPartitionStyle
 }
-else
+
+if ($DriverPath -ne "")
 {
-    $ConvertWindowsImageParam = @{  
-        SourcePath          = $ImagePath  
-        RemoteDesktopEnable = $True 
-        ExpandOnNativeBoot  = $false 
-        Passthru            = $True  
-        Edition             = $Edition    
-        VHDPath             = $VHDXFILE 
-        VHDFormat           = 'VHDX'
-        SizeBytes           = $size
-        BCDinVHD            = $Usage
-        Driver              = $DriverPath
-        VHDPartitionStyle   = $VHDPartitionStyle
-    } 
+    $ConvertWindowsImageParam.Add("Driver",$DriverPath)
+}
+
+if ($PackagePath -ne "")
+{
+    $ConvertWindowsImageParam.Add("Package",$PackagePath)
 }
 
 $VHDx = Convert-WindowsImage @ConvertWindowsImageParam
