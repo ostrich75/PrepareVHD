@@ -58,6 +58,13 @@ param
     $reboot = $true
 )
 
+function Get-Script-Directory
+{
+    $scriptInvocation = (Get-Variable MyInvocation -Scope 1).Value
+    return Split-Path $scriptInvocation.MyCommand.Path
+}
+
+
 if (!(Test-Path -Path $ImagePath))
 {
     $ImagePath = Read-Host "Where is WIM image?"
@@ -112,8 +119,10 @@ $VHDXFILE = Join-Path $VHDxPath $COMPUTERNAME'-'$Differentiator'.vhdx'
 $CreateVHDMessage = "Creating the new VHDX"
 Write-Progress $CreateVHDMessage
 
+$ScriptPath = Get-Script-Directory
+
 # Load (aka "dot-source) the Function 
-. .\Convert-WindowsImage.ps1 
+. $ScriptPath\Convert-WindowsImage.ps1 
 # Prepare all the variables in advance (optional) 
 
 if ($DriverPath -eq "")
@@ -207,3 +216,4 @@ else
     Dismount-DiskImage -ImagePath $VHDXFILE
     Write-Host "INFO   : VHDx File is ready:"$VHDXFILE -ForegroundColor Green
 }
+
