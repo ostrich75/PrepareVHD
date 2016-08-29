@@ -191,7 +191,7 @@ Catch
 
 $ErrorActionPreference = 'Stop'
 
-$UnattendedFilePath = ".\unattend_template.xml"
+$UnattendedFilePath = "$ScriptPath\unattend_template.xml"
 
 $UnattendedFile = (Get-Content $UnattendedFilePath)
 
