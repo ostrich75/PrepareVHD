@@ -143,7 +143,7 @@ $CreateVHDMessage = "Creating the new VHDX"
 Write-Progress $CreateVHDMessage
 
 # Load (aka "dot-source) the Function 
-. .\Convert-WindowsImage.ps1 
+. $PSScriptRoot\Convert-WindowsImage.ps1 
 # Prepare all the variables in advance (optional) 
 
 $ConvertWindowsImageParam = @{  
@@ -203,7 +203,7 @@ Catch
 
 $ErrorActionPreference = 'Stop'
 
-$UnattendedFilePath = ".\unattend_template.xml"
+$UnattendedFilePath = Join-Path $PSScriptRoot "unattend_template.xml"
 
 $UnattendedFile = (Get-Content $UnattendedFilePath)
 
