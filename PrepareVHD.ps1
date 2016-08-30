@@ -207,11 +207,11 @@ $UnattendedFilePath = Join-Path $PSScriptRoot "unattend_template.xml"
 
 $UnattendedFile = (Get-Content $UnattendedFilePath)
 
-$UnattendedFile = $UnattendedFile -replace "%locale%", $VHDLanguage
-$UnattendedFile = $UnattendedFile -replace "%Architecture%", $Architecture
-$UnattendedFile = $UnattendedFile -replace "%ProductKey%", $ProductKey
-$UnattendedFile = $UnattendedFile -replace "%adminpassword%", $AdminPassword
-$UnattendedFile = $UnattendedFile -replace "%computername%", $MachineName
+$UnattendedFile = $UnattendedFile.replace("%locale%", $VHDLanguage)
+$UnattendedFile = $UnattendedFile.replace("%Architecture%", $Architecture)
+$UnattendedFile = $UnattendedFile.replace("%ProductKey%", $ProductKey)
+$UnattendedFile = $UnattendedFile.replace("%adminpassword%", $AdminPassword)
+$UnattendedFile = $UnattendedFile.replace("%computername%", $MachineName)
 
 $UnattendedFile | Out-File ($DriveLetter+":\unattend.xml") -Encoding ascii
 
