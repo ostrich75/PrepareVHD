@@ -58,12 +58,6 @@ param
     $reboot = $true
 )
 
-function Get-Script-Directory
-{
-    $scriptInvocation = (Get-Variable MyInvocation -Scope 1).Value
-    return Split-Path $scriptInvocation.MyCommand.Path
-}
-
 
 if (!(Test-Path -Path $ImagePath))
 {
@@ -119,10 +113,8 @@ $VHDXFILE = Join-Path $VHDxPath $COMPUTERNAME'-'$Differentiator'.vhdx'
 $CreateVHDMessage = "Creating the new VHDX"
 Write-Progress $CreateVHDMessage
 
-$ScriptPath = Get-Script-Directory
-
 # Load (aka "dot-source) the Function 
-. $ScriptPath\Convert-WindowsImage.ps1 
+. $PSScriptRoot\Convert-WindowsImage.ps1 
 # Prepare all the variables in advance (optional) 
 
 if ($DriverPath -eq "")
@@ -191,7 +183,7 @@ Catch
 
 $ErrorActionPreference = 'Stop'
 
-$UnattendedFilePath = "$ScriptPath\unattend_template.xml"
+$UnattendedFilePath = "$PSScriptRoot\unattend_template.xml"
 
 $UnattendedFile = (Get-Content $UnattendedFilePath)
 
