@@ -186,7 +186,8 @@ Write-Host "INFO   : Computer Name will be"$MachineName -ForegroundColor Green
 Write-Host "INFO   : Preparing Unattend File..."
 
 # Get VHD Language and Architecture value from VHD
-$VHDLanguage = 'en-us'
+$VHDLanguage = 'EN-US'
+$Architecture = 'AMD64'
 $regSystemPath = $DriveLetter + ':\windows\system32\config\system'
 Try
 {
@@ -207,11 +208,11 @@ $UnattendedFilePath = Join-Path $PSScriptRoot "unattend_template.xml"
 
 $UnattendedFile = (Get-Content $UnattendedFilePath)
 
-$UnattendedFile = $UnattendedFile.replace("%locale%", $VHDLanguage)
-$UnattendedFile = $UnattendedFile.replace("%Architecture%", $Architecture)
-$UnattendedFile = $UnattendedFile.replace("%ProductKey%", $ProductKey)
-$UnattendedFile = $UnattendedFile.replace("%adminpassword%", $AdminPassword)
-$UnattendedFile = $UnattendedFile.replace("%computername%", $MachineName)
+$UnattendedFile = $UnattendedFile.Replace("%locale%", $VHDLanguage)
+$UnattendedFile = $UnattendedFile.Replace("%Architecture%", $Architecture)
+$UnattendedFile = $UnattendedFile.Replace("%ProductKey%", $ProductKey)
+$UnattendedFile = $UnattendedFile.Replace("%adminpassword%", $AdminPassword)
+$UnattendedFile = $UnattendedFile.Replace("%computername%", $MachineName)
 
 $UnattendedFile | Out-File ($DriveLetter+":\unattend.xml") -Encoding ascii
 
