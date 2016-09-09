@@ -1,4 +1,4 @@
-﻿[CmdletBinding()]
+﻿[CmdletBinding(DefaultParametersetName='None')]
 param
 (
     [string]
@@ -59,7 +59,13 @@ param
  
     [bool]
     [Parameter(Mandatory = $false)]
-    $reboot = $true
+    $reboot = $true,
+        
+    [Parameter(ParameterSetName='Djoin',Mandatory=$false)][switch]$Djoin,      
+    [Parameter(ParameterSetName='Djoin',Mandatory=$true)]
+    [ValidateNotNullOrEmpty()]
+    [string]$DomainName
+
 )
 
 if (!(Test-Path -Path $ImagePath))
@@ -217,6 +223,20 @@ $UnattendedFile = $UnattendedFile.Replace("%computername%", $MachineName)
 $UnattendedFile | Out-File ($DriveLetter+":\unattend.xml") -Encoding ascii
 
 Write-Host "INFO   : Unattend File is in position"
+
+if ($Djoin) {
+    try {
+        Write-Verbose -Message "Creating DJoin File to '$env:TEMP\$MachineName.txt'"
+        djoin /provision /domain $DomainName /machine $MachineName /savefile "$env:TEMP\$MachineName.txt"
+        Write-Verbose -Message "Applying DJoin File '$env:TEMP\$MachineName.txt' to '$DriveLetter`:\Windows'"
+        djoin /requestODJ /loadfile "$env:TEMP\$MachineName.txt" /windowspath "$DriveLetter`:\Windows"
+    }
+    catch{
+        throw {"Can't process offline join '$MachineName' to Domain '$DomainName'" -f $MachineName,$DomainName}
+    }
+}
+
+
 
 if ( ($Usage -eq "NativeBoot") -and ($reboot -eq $true)) 
 {
